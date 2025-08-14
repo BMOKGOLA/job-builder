@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import TemplateSelector from "@/components/TemplateSelector";
 import ResumeBuilder from "@/components/ResumeBuilder";
 import ResumePreview from "@/components/ResumePreview";
+import APIConfigNotice from "@/components/APIConfigNotice";
 import { useToast } from "@/hooks/use-toast";
 
 type AppState = "hero" | "templates" | "builder" | "preview";
@@ -132,6 +133,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* API Configuration Notice */}
+      {currentState === "hero" && (
+        <div className="fixed top-4 right-4 z-50 max-w-sm">
+          <APIConfigNotice />
+        </div>
+      )}
       {renderCurrentState()}
     </div>
   );
