@@ -12,6 +12,17 @@ serve(async (req) => {
 
   try {
     const { action, payload } = await req.json()
+    
+    // Input validation
+    if (!action || !payload) {
+      throw new Error('Missing required fields: action and payload')
+    }
+
+    const validActions = ['generateContentSuggestions', 'analyzeATSCompatibility', 'analyzeJobMatch', 'generateSmartSuggestions']
+    if (!validActions.includes(action)) {
+      throw new Error(`Invalid action. Must be one of: ${validActions.join(', ')}`)
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     
     if (!apiKey) {
@@ -88,6 +99,10 @@ Format response as JSON array of strings.`
         throw new Error('Invalid action')
     }
 
+    // Create AbortController for timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30s timeout
+
     const response = await fetch(`${baseUrl}?key=${apiKey}`, {
       method: 'POST',
       headers: {
@@ -110,8 +125,11 @@ Format response as JSON array of strings.`
           topP: 0.95,
           maxOutputTokens: 2048,
         }
-      })
+      }),
+      signal: controller.signal
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       const error = await response.text()
@@ -144,6 +162,15 @@ Format response as JSON array of strings.`
 
   } catch (error) {
     console.error('Error:', error)
+    
+    // Handle specific error types
+    if (error.name === 'AbortError') {
+      return new Response(
+        JSON.stringify({ error: 'Request timeout - please try again' }),
+        { status: 408, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {

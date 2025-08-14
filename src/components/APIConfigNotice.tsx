@@ -27,7 +27,7 @@ const APIConfigNotice = () => {
             <li>1. Go to your Supabase project dashboard</li>
             <li>2. Navigate to Settings → Secrets</li>
             <li>3. Add a new secret with name: <code className="bg-muted px-1 rounded">GEMINI_API_KEY</code></li>
-            <li>4. Set the value to: <code className="bg-muted px-1 rounded">AIzaSyAI5qePEY4cVNt8jUDDUrtUv-SVjDKlQ9E</code></li>
+            <li>4. Set the value to your Gemini API key (starts with AIzaSy...)</li>
             <li>5. Save and redeploy your edge functions</li>
           </ol>
         </div>

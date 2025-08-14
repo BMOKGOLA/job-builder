@@ -1,5 +1,5 @@
 // AI service for content generation and optimization
-// Simulates Google Flash 1.5 API integration
+// Integrates with Gemini 1.5 Flash API via Supabase Edge Functions
 
 export interface AIContentSuggestion {
   section: string;
